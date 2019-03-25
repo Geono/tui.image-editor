@@ -15,6 +15,7 @@ var activeObjectId;
 var $btns = $('.menu-item');
 var $btnsActivatable = $btns.filter('.activatable');
 var $inputImage = $('#input-image-file');
+var $dragAndDropInputImage = $('#input-image-file');
 var $btnDownload = $('#btn-download');
 
 var $btnUndo = $('#btn-undo');
@@ -466,11 +467,9 @@ $inputBrushWidthRange.on('change', function() {
 
 $inputImage.on('change', function(event) {
     var file;
-
     if (!supportingFileAPI) {
         alert('This browser does not support file-api');
     }
-
     file = event.target.files[0];
     imageEditor.loadImageFromFile(file).then(result => {
         console.log(result);
@@ -922,13 +921,41 @@ $inputRangeColorFilterValue.on('change', function() {
 
 // Etc..
 
-// Load sample image
-imageEditor.loadImageFromURL('img/sampleImage.jpg', 'SampleImage').then(sizeValue => {
-    console.log(sizeValue);
-    imageEditor.clearUndoStack();
-});
-
 // IE9 Unselectable
 $('.menu').on('selectstart', function() {
     return false;
 });
+
+// Advanced Upload
+var isAdvancedUpload = function () {
+    var div = document.createElement('div');
+    return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+}();
+var $form = $('.dragndrop');
+if (isAdvancedUpload) {
+    $form.addClass('has-advanced-upload');
+}
+if (isAdvancedUpload) {
+    var droppedFiles = false;
+    $form.on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }).on('dragover dragenter', function () {
+        $form.addClass('is-dragover');
+    }).on('dragleave dragend drop', function () {
+        $form.removeClass('is-dragover');
+    }).on('drop', function (e) {
+        droppedFiles = e.originalEvent.dataTransfer.files;
+    }).on('drop', function (e) { // when drag & drop is supported
+        droppedFiles = e.originalEvent.dataTransfer.files;
+        console.log('files: ', droppedFiles);
+        if (!supportingFileAPI) {
+            alert('This browser does not support file-api');
+        }
+        const file = droppedFiles[0];
+        imageEditor.loadImageFromFile(file).then(result => {
+            console.log(result);
+            imageEditor.clearUndoStack();
+        });
+    });
+}

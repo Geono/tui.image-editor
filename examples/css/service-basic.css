@@ -2,10 +2,8 @@
     border: 1px solid black;
 }
 .body-container {
-    width: 1000px;
-}
-.tui-image-editor-controls {
-    min-height: 250px;
+    width: 100%;
+    height: 100vh;
 }
 .menu {
     padding: 0;
@@ -66,8 +64,11 @@
     margin-bottom: 1em;
     display: none;
 }
+.dragndrop {
+    height: 100%
+}
 .tui-image-editor {
-    height: 500px;
+    height: 100%
 }
 .tui-image-editor-canvas-container {
     margin: 0 auto;
@@ -125,4 +126,29 @@
     border: 1px solid #bfbebe;
     background-color: #fff;
     z-index: 9999;
+}
+
+/* drag n drop */
+
+.dragndrop__uploading,
+.dragndrop__success,
+.dragndrop__error {
+  display: none;
+}
+.dragndrop.has-advanced-upload {
+  background-color: white;
+  outline: 2px dashed black;
+  outline-offset: -10px;
+}
+.dragndrop.has-advanced-upload .dragndrop__dragndrop {
+  display: inline;
+}
+.dragndrop.is-dragover {
+  background-color: grey;
+}
+.dragndrop.is-uploading .dragndrop__input {
+    visibility: none;
+}
+.dragndrop.is-uploading .dragndrop__uploading {
+    display: block;
 }
