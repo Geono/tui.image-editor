@@ -944,8 +944,6 @@ if (isAdvancedUpload) {
         $form.addClass('is-dragover');
     }).on('dragleave dragend drop', function () {
         $form.removeClass('is-dragover');
-    }).on('drop', function (e) {
-        droppedFiles = e.originalEvent.dataTransfer.files;
     }).on('drop', function (e) { // when drag & drop is supported
         droppedFiles = e.originalEvent.dataTransfer.files;
         console.log('files: ', droppedFiles);
