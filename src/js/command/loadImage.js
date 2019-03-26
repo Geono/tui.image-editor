@@ -23,7 +23,34 @@ const command = {
         const prevImage = loader.getCanvasImage();
         const prevImageWidth = prevImage ? prevImage.width : 0;
         const prevImageHeight = prevImage ? prevImage.height : 0;
-        const objects = graphics.removeAll(true).filter(objectItem => objectItem.type !== 'cropzone');
+
+        if (prevImage) {
+            const fabricCanvas = graphics.getCanvas();
+            fabricCanvas.add(prevImage);
+
+            return new Promise(
+                () => {
+                    fabric.Image.fromURL(imgUrl, newImg => {
+                        fabricCanvas.add(newImg);
+                        const resultImg = fabricCanvas.toDataURL();
+                        return loader.load(imageName, resultImg);
+                    });
+                },
+                {
+                    lockUniScaling: false,
+                    crossOrigin: 'Anonymous'
+                }
+            ).then(newImage => ({
+                oldWidth: prevImageWidth,
+                oldHeight: prevImageHeight,
+                newWidth: newImage.width,
+                newHeight: newImage.height
+            }));
+        }
+
+        const objects = graphics
+            .removeAll(true)
+            .filter(objectItem => objectItem.type !== 'cropzone');
 
         objects.forEach(objectItem => {
             objectItem.evented = true;
